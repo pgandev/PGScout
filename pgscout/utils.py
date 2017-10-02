@@ -61,15 +61,15 @@ def get_async_requests_session(num_retries, backoff_factor, pool_size,
 
     return session
 
-def send_status_to_discord(args, title, message, embed_color):
-    if args.scan_log_webhook:
+def send_status_to_discord(wh, config, title, message, embed_color):
+    if scan_log_webhook:
         log.info('Beginning scan log webhook consruction.')
         req_timeout = 1.0
     
         payload = {
             'embeds': [{
                 'title': title,
-                'description': '{}\n\nConfig: {}\nPath: {}\nIP: {}'.format(message, args.config, os.path.realpath(__file__), get_ip_address('ens192')),
+                'description': '{}\n\nConfig: {}\nPath: {}\nIP: {}'.format(message, config, os.path.realpath(__file__), get_ip_address('ens192')),
                 'color': embed_color
             }]
         }
@@ -82,7 +82,7 @@ def send_status_to_discord(args, title, message, embed_color):
 
             # Disable keep-alive and set streaming to True, so we can skip
             # the response content.
-            session.post(args.scan_log_webhook, json=payload,
+            session.post(scan_log_webhook, json=payload,
                          timeout=(None, req_timeout),
                          background_callback=__wh_completed,
                          headers={'Connection': 'close'},
