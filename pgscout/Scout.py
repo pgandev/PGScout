@@ -13,7 +13,7 @@ from pgoapi.protos.pogoprotos.networking.responses.encounter_response_pb2 import
 from pgscout.config import cfg_get
 from pgscout.moveset_grades import get_moveset_grades
 from pgscout.stats import inc_for_pokemon
-from pgscout.utils import calc_pokemon_level, calc_iv
+from pgscout.utils import calc_pokemon_level, calc_iv, send_status_to_discord
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +41,7 @@ class Scout(POGOAccount):
                                     proxy_provider=cfg_get('proxy_provider'))
 
         self.job_queue = job_queue
+        self.username = username
 
         # Stats
         self.start_time = time.time()
@@ -65,10 +66,23 @@ class Scout(POGOAccount):
                 self.set_position(lat, lng, job.altitude)
                 if not self.check_login():
                     job.result = self.scout_error(self.last_msg)
-                    if self.is_banned() or self.has_captcha():
+                    if self.is_banned():
+                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username))
+                        break
+                    elif self.has_captcha():
+                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username))
                         break
                     else:
                         continue
+
+                # Check if banned.
+                if self.is_banned():
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username))
+                    job.result = self.scout_error("Account banned")
+                    break
+                elif self.has_captcha():
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username))
+                    break
 
                 if job.encounter_id and job.spawn_point_id:
                     job.result = self.scout_by_encounter_id(job)
@@ -85,6 +99,7 @@ class Scout(POGOAccount):
                     self.shadowbanned = True
 
                 if self.shadowbanned:
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account probably shadowbanned.', '{} is probably shadowbanned.'.format(self.username))
                     self.log_warning("Account probably shadowbanned. Stopping.")
                     break
 
