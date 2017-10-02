@@ -61,7 +61,13 @@ def get_async_requests_session(num_retries, backoff_factor, pool_size,
 
     return session
 
-def send_status_to_discord(wh, config, title, message, embed_color):
+
+# Background handler for completed webhook requests from requests lib.
+def __wh_request_completed(sess, resp):
+    # Instantly close the response to release the connection back to the pool.
+    resp.close()
+
+def send_status_to_discord(scan_log_webhook, config, title, message, embed_color):
     if scan_log_webhook:
         log.info('Beginning scan log webhook consruction.')
         req_timeout = 1.0
@@ -84,7 +90,7 @@ def send_status_to_discord(wh, config, title, message, embed_color):
             # the response content.
             session.post(scan_log_webhook, json=payload,
                          timeout=(None, req_timeout),
-                         background_callback=__wh_completed,
+                         background_callback=__wh_request_completed,
                          headers={'Connection': 'close'},
                          stream=True)
         except requests.exceptions.ReadTimeout:
