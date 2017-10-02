@@ -58,6 +58,9 @@ def parse_args():
     parser.add_argument('-pgpsid', '--pgpool-system-id',
                         help='System ID for PGPool. Required if --pgpool-url given.')
 
+    parser.add_argument('-slwh', '--scan-log-webhook',
+                        help='System ID for PGPool. Required if --pgpool-url given.')
+
     accs = parser.add_mutually_exclusive_group(required=True)
     accs.add_argument('-pgpn', '--pgpool-num-accounts', type=int, default=0,
                       help='Use this many accounts from PGPool. --pgpool-url required.')
