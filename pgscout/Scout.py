@@ -77,7 +77,7 @@ class Scout(POGOAccount):
 
                 # Check if banned.
                 if self.is_banned():
-                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username))
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username), '16060940')
                     job.result = self.scout_error("Account banned")
                     break
                 elif self.has_captcha():
@@ -99,7 +99,7 @@ class Scout(POGOAccount):
                     self.shadowbanned = True
 
                 if self.shadowbanned:
-                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account probably shadowbanned.', '{} is probably shadowbanned.'.format(self.username))
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account probably shadowbanned.', '{} is probably shadowbanned.'.format(self.username), '16060940')
                     self.log_warning("Account probably shadowbanned. Stopping.")
                     break
 
