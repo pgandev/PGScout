@@ -3,6 +3,7 @@ git+https://github.com/pogodevorg/pgoapi.git@93a423a#egg=pgoapi
 git+https://github.com/sLoPPydrive/MrMime.git#egg=MrMime
 geopy
 beautifulsoup4
+requests-futures==0.9.7
 requests
 psutil
 configargparse
