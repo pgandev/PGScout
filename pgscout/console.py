@@ -80,7 +80,7 @@ def print_status(scouts, initial_display, jobs):
                 writer = csv.writer(csvfile, delimiter=',')
                 for account in scouts:
                     if account.acc._bad_request_ban or account.acc._player_state.get('banned', False) or account.acc.shadowbanned:
-                        row = [account['username']]
+                        row = [account.acc.username]
                         writer.writerow(row)
             print ('Accounts exported successfully!')
             state['display'] = 'scouts'
