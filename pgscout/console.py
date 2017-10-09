@@ -34,6 +34,8 @@ def input_processor(state):
             state['page'] = 1
         elif command == 't':
             app_state.toggle_new_requests()
+        elif command == 'x':
+            state['display'] = 'export'
         elif command == '':
             # Toggle between scouts and log view
             state['display'] = 'scouts' if state['display'] == 'logs' else 'logs'
@@ -69,6 +71,23 @@ def print_status(scouts, initial_display, jobs):
     while True:
         time.sleep(1)
         if state['display'] == 'logs':
+            continue
+            
+        if state['display'] == 'export':
+            print ('Exporting banned accounts to banned.csv ...')
+            banned_file = monocle_dir / 'banned.csv'
+            write_header = not banned_file.exists()
+            with banned_file.open('a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                if write_header:
+                    writer.writerow(('username'))
+                for account in scouts:
+                    if account._bad_request_ban or account._player_state.get('banned', False) or account.shadowbanned = True:
+                        row = [account['username']]
+                        writer.writerow(row)
+            print ('Accounts exported successfully!')
+            state['display'] = 'scouts'
+            state['page'] = 1
             continue
 
         lines = []
