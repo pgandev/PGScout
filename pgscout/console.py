@@ -16,6 +16,7 @@ from pgscout.stats import get_pokemon_stats
 from pgscout.utils import get_pokemon_name, rss_mem_size, app_state
 
 default_log_level = 0
+import csv
 
 def input_processor(state):
     mainlog = logging.getLogger()
@@ -75,14 +76,10 @@ def print_status(scouts, initial_display, jobs):
             
         if state['display'] == 'export':
             print ('Exporting banned accounts to banned.csv ...')
-            banned_file = monocle_dir / 'banned.csv'
-            write_header = not banned_file.exists()
-            with banned_file.open('a') as csvfile:
+            with open('banned.csv', 'w') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',')
-                if write_header:
-                    writer.writerow(('username'))
                 for account in scouts:
-                    if account._bad_request_ban or account._player_state.get('banned', False) or account.shadowbanned = True:
+                    if account.acc._bad_request_ban or account.acc._player_state.get('banned', False) or account.acc.shadowbanned:
                         row = [account['username']]
                         writer.writerow(row)
             print ('Accounts exported successfully!')
