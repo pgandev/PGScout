@@ -67,10 +67,10 @@ class Scout(POGOAccount):
                 if not self.check_login():
                     job.result = self.scout_error(self.last_msg)
                     if self.is_banned():
-                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username))
+                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account banned.', '{} is banned.'.format(self.username), '16060940')
                         break
                     elif self.has_captcha():
-                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username))
+                        send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username), '16060940')
                         break
                     else:
                         continue
@@ -81,7 +81,7 @@ class Scout(POGOAccount):
                     job.result = self.scout_error("Account banned")
                     break
                 elif self.has_captcha():
-                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username))
+                    send_status_to_discord(cfg_get('scan_log_webhook'), cfg_get('config'), 'Account captcha''ed.', '{} is captcha''ed.'.format(self.username), '16060940')
                     break
 
                 if job.encounter_id and job.spawn_point_id:
